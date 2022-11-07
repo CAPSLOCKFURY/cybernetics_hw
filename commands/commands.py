@@ -60,3 +60,18 @@ class LogoutCommand(AbstractCommand):
     def execute(self):
         self.user_service.logout()
         print("Logout successful")
+
+
+class AddBalanceCommand(AbstractCommand):
+
+    user_service = _user_service
+
+    def execute(self):
+        amount = int(input("Enter money amount:"))
+        self.user_service.add_balance(amount)
+
+
+class ListRoomsCommand(AbstractCommand):
+
+    def execute(self):
+        pass

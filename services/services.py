@@ -21,6 +21,11 @@ class UserService:
                 return
         raise UserNotFound(login)
 
+    def add_balance(self, amount: int):
+        user = SessionHolder.get_current_user()
+        user.balance += amount
+        self.repository.save(user)
+
     def get_current_user(self):
         return self.repository.sync(SessionHolder.get_current_user())
 

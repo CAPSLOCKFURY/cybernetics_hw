@@ -7,6 +7,7 @@ non_logged_in_command_map: [int, AbstractCommand] = {
 
 command_map: [int, AbstractCommand] = {
     1: ProfileCommand(),
+    2: AddBalanceCommand(),
     9: LogoutCommand(),
 }
 
@@ -22,6 +23,7 @@ def get_list_of_options_for_non_logged_in():
 def get_list_of_options_for_logged_in():
     return """List of commands, enter number to execute:
     1: Profile
+    2: Add balance
     9: Logout
    -1: Exit
     """
