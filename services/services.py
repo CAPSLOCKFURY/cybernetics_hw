@@ -20,3 +20,9 @@ class UserService:
                 SessionHolder.set_current_user(user)
                 return
         raise UserNotFound(login)
+
+    def get_current_user(self):
+        return self.repository.sync(SessionHolder.get_current_user())
+
+    def logout(self):
+        SessionHolder.set_current_user(None)

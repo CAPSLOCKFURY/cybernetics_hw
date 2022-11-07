@@ -37,6 +37,26 @@ class RegisterCommand(AbstractCommand):
         try:
             self.user_service.register_user(User(login, password))
         except UserAlreadyExists:
-            print(f"User with login: {login} already exists")
+            print(f"User with login {login} already exists")
             return
         print("Successfully registered user")
+
+
+class ProfileCommand(AbstractCommand):
+
+    user_service = _user_service
+
+    def execute(self):
+        user = self.user_service.get_current_user()
+        print("Your profile")
+        print(f"Login: {user.login}")
+        print(f"Balance: {user.balance} \n")
+
+
+class LogoutCommand(AbstractCommand):
+
+    user_service = _user_service
+
+    def execute(self):
+        self.user_service.logout()
+        print("Logout successful")
