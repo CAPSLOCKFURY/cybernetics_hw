@@ -3,6 +3,7 @@ from services.services import *
 from models.models import *
 
 _user_service = UserService()
+_room_service = RoomService()
 
 
 class AbstractCommand(ABC):
@@ -73,5 +74,14 @@ class AddBalanceCommand(AbstractCommand):
 
 class ListRoomsCommand(AbstractCommand):
 
+    room_service = _room_service
+
     def execute(self):
-        pass
+        rooms = self.room_service.get_all_rooms()
+        print("------------------------------------")
+        for room in rooms:
+            print(f"Room number: {room.room_number}")
+            print(f"Room name: {room.room_name}")
+            print(f"Room capacity: {room.room_capacity}")
+            print(f"Room price: {room.room_price}")
+            print("------------------------------------")
