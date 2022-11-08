@@ -2,10 +2,14 @@ from db.database import ShelveRepository
 from session.holder import SessionHolder
 from .exceptions import *
 from models.models import *
+from utils.date import intersects
+
+_user_repository = ShelveRepository("users")
+_room_repository = ShelveRepository("rooms")
 
 
 class UserService:
-    repository = ShelveRepository("users")
+    repository = _user_repository
 
     def register_user(self, new_user) -> User:
         users = self.repository.get_all()
@@ -35,8 +39,24 @@ class UserService:
 
 
 class RoomService:
+    room_repository = _room_repository
 
-    repository = ShelveRepository("rooms")
+    user_repository = _user_repository
 
     def get_all_rooms(self) -> list[Room]:
-        return self.repository.get_all()
+        return self.room_repository.get_all()
+
+    def book_room(self, room_pk, check_in_date, check_out_date):
+        user = SessionHolder.get_current_user()
+        room_record = RoomRecord(user.pk, check_in_date, check_out_date)
+        room = self.room_repository.get_by_id(room_pk)
+        date_diff = abs((check_out_date - check_in_date).days)
+        if (date_diff * user.balance) < room.room_price * date_diff:
+            raise NotEnoughMoney()
+        for rr in room.booked_dates:
+            if intersects(check_in_date, check_out_date, rr.check_in_date, rr.check_out_date):
+                raise BookingDateIntersection()
+        room.booked_dates.append(room_record)
+        user.balance -= room.room_price * date_diff
+        self.user_repository.save(user)
+        self.room_repository.save(room)

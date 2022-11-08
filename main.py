@@ -10,6 +10,7 @@ command_map: [int, AbstractCommand] = {
     1: ProfileCommand(),
     2: AddBalanceCommand(),
     3: ListRoomsCommand(),
+    4: BookRoomCommand(),
     9: LogoutCommand(),
 }
 
@@ -28,6 +29,7 @@ def get_list_of_options_for_logged_in():
     1: Profile
     2: Add balance
     3: List rooms
+    4: Book room
     9: Logout
    -1: Exit
     """

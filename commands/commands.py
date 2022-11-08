@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from services.services import *
 from models.models import *
+from datetime import datetime
 
 _user_service = UserService()
 _room_service = RoomService()
@@ -86,3 +87,22 @@ class ListRoomsCommand(AbstractCommand):
             print(f"Room capacity: {room.room_capacity}")
             print(f"Room price: {room.room_price}")
             print("------------------------------------")
+
+
+class BookRoomCommand(AbstractCommand):
+
+    room_service = _room_service
+
+    def execute(self):
+        room_number = int(input("Enter room number:"))
+        check_in_date = datetime.strptime(input("Enter check in date:"), "%d-%m-%Y")
+        check_out_date = datetime.strptime(input("Enter check out date:"), "%d-%m-%Y")
+        try:
+            self.room_service.book_room(room_number, check_in_date, check_out_date)
+        except BookingDateIntersection:
+            print("Booking date overlaps with existing ones")
+            return
+        except NotEnoughMoney:
+            print("You have not enough money to book this room for given dates")
+            return
+        print(f"Successfully booked room {room_number} on dates {check_in_date} to {check_out_date}")
