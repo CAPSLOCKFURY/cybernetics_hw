@@ -86,6 +86,10 @@ class ListRoomsCommand(AbstractCommand):
             print(f"Room name: {room.room_name}")
             print(f"Room capacity: {room.room_capacity}")
             print(f"Room price: {room.room_price}")
+            if len(room.booked_dates) != 0:
+                print("Booked dates: ")
+                for rr in room.booked_dates:
+                    print(f"Check in Date: {rr.check_in_date.date()}, Check out Date: {rr.check_out_date.date()}")
             print("------------------------------------")
 
 
@@ -105,4 +109,4 @@ class BookRoomCommand(AbstractCommand):
         except NotEnoughMoney:
             print("You have not enough money to book this room for given dates")
             return
-        print(f"Successfully booked room {room_number} on dates {check_in_date} to {check_out_date}")
+        print(f"Successfully booked room {room_number} on dates {check_in_date.date()} to {check_out_date.date()}")
