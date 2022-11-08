@@ -78,6 +78,7 @@ class ListRoomsCommand(AbstractCommand):
 
     def execute(self):
         rooms = self.room_service.get_all_rooms()
+        rooms.sort(key=lambda val: val.room_name)
         print("------------------------------------")
         for room in rooms:
             print(f"Room number: {room.room_number}")
