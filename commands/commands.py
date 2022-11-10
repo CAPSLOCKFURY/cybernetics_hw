@@ -2,9 +2,15 @@ from abc import ABC, abstractmethod
 from services.services import *
 from models.models import *
 from datetime import datetime
+from validators.validators import *
 
 _user_service = UserService()
 _room_service = RoomService()
+_login_length_validator = StringLengthValidator(4, less=False)
+_password_length_validator = StringLengthValidator(5, less=False)
+_login_regex_validator = RegexValidator("[a-zA-Z0-9_]+")
+_password_regex_validator = RegexValidator("[a-zA-Z0-9_]+")
+_money_amount_validator = MinNumberValidator(0)
 
 
 class AbstractCommand(ABC):
@@ -36,6 +42,18 @@ class RegisterCommand(AbstractCommand):
     def execute(self):
         login = input("Enter login:")
         password = input("Enter password:")
+        if not _login_length_validator.validate(login):
+            print("Login is less than 4 characters")
+            return
+        if not _login_regex_validator.validate(login):
+            print("Login can contain only lowercase and uppercase latin, numbers, underscores")
+            return
+        if not _password_length_validator.validate(password):
+            print("Password is less than 5 characters")
+            return
+        if not _password_regex_validator.validate(password):
+            print("Login can contain only lowercase and uppercase latin, numbers, underscores")
+            return
         try:
             self.user_service.register_user(User(login, password))
         except UserAlreadyExists:
@@ -69,8 +87,16 @@ class AddBalanceCommand(AbstractCommand):
     user_service = _user_service
 
     def execute(self):
-        amount = int(input("Enter money amount:"))
+        try:
+            amount = int(input("Enter money amount:"))
+        except ValueError:
+            print("Incorrect money amount")
+            return
+        if not _money_amount_validator.validate(amount):
+            print("Money amount is less or equal 0")
+            return
         self.user_service.add_balance(amount)
+        print("Successfully added money to your balance")
 
 
 class ListRoomsCommand(AbstractCommand):
