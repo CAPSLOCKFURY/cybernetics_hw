@@ -11,6 +11,9 @@ _password_length_validator = StringLengthValidator(5, less=False)
 _login_regex_validator = RegexValidator("[a-zA-Z0-9_]+")
 _password_regex_validator = RegexValidator("[a-zA-Z0-9_]+")
 _money_amount_validator = MinNumberValidator(0)
+_date_gte_today_validator = DateGTETodayValidator()
+_check_in_date_before_check_out_date_validator = Date1BeforeDate2Validator()
+_date_not_equals_validator = DatesNotEqualValidator()
 
 
 class AbstractCommand(ABC):
@@ -127,6 +130,18 @@ class BookRoomCommand(AbstractCommand):
         room_number = int(input("Enter room number:"))
         check_in_date = datetime.strptime(input("Enter check in date:"), "%d-%m-%Y")
         check_out_date = datetime.strptime(input("Enter check out date:"), "%d-%m-%Y")
+        if not _date_gte_today_validator.validate(check_in_date):
+            print("Check in date is before today")
+            return
+        if not _date_gte_today_validator.validate(check_out_date):
+            print("Check out date is before today")
+            return
+        if not _date_not_equals_validator.validate(check_in_date, check_out_date):
+            print("Check in date is check out date")
+            return
+        if not _check_in_date_before_check_out_date_validator.validate(check_in_date, check_out_date):
+            print("Check out date is before check in date")
+            return
         try:
             self.room_service.book_room(room_number, check_in_date, check_out_date)
         except BookingDateIntersection:

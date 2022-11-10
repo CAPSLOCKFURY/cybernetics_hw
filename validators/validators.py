@@ -47,7 +47,7 @@ class DatesNotEqualValidator(AbstractValidator):
 class DateGTETodayValidator(AbstractValidator):
 
     def validate(self, date):
-        return date >= datetime.today()
+        return date.date() >= datetime.today().date()
 
 
 class Date1BeforeDate2Validator(AbstractValidator):
