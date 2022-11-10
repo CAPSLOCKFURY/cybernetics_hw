@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 import re
+from datetime import datetime
 
 
 class AbstractValidator(ABC):
 
     @abstractmethod
-    def validate(self, arg):
+    def validate(self, *arg):
         pass
 
 
@@ -33,5 +34,23 @@ class MinNumberValidator(AbstractValidator):
     def __init__(self, min_num):
         self.min_num = min_num
 
-    def validate(self, arg):
+    def validate(self, arg: int):
         return self.min_num < arg
+
+
+class DatesNotEqualValidator(AbstractValidator):
+
+    def validate(self, date1, date2):
+        return date1 != date2
+
+
+class DateGTETodayValidator(AbstractValidator):
+
+    def validate(self, date):
+        return date >= datetime.today()
+
+
+class Date1BeforeDate2Validator(AbstractValidator):
+
+    def validate(self, date1, date2):
+        return date1 < date2

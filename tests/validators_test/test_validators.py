@@ -43,3 +43,55 @@ class TestValidators(unittest.TestCase):
         validator = MinNumberValidator(10)
         res = validator.validate(1)
         self.assertFalse(res)
+
+    def test_DatesNotEqualValidator_validates_dates(self):
+        validator = DatesNotEqualValidator()
+        date1 = datetime.strptime("08-11-2022", "%d-%m-%Y")
+        date2 = datetime.strptime("11-11-2022", "%d-%m-%Y")
+        res = validator.validate(date1, date2)
+        self.assertTrue(res)
+
+    def test_DatesNotEqualValidator_rejects_equal_dates(self):
+        validator = DatesNotEqualValidator()
+        date1 = datetime.strptime("08-11-2022", "%d-%m-%Y")
+        date2 = datetime.strptime("08-11-2022", "%d-%m-%Y")
+        res = validator.validate(date1, date2)
+        self.assertFalse(res)
+
+    def test_DateGTETodayValidator_validates_dates(self):
+        validator = DateGTETodayValidator()
+        date = datetime.strptime("08-11-2111", "%d-%m-%Y")
+        res = validator.validate(date)
+        self.assertTrue(res)
+
+    def test_DateGTETodayValidator_validates_today_date(self):
+        validator = DateGTETodayValidator()
+        date = datetime.today()
+        res = validator.validate(date)
+        self.assertTrue(res)
+
+    def test_DateGTETodayValidator_rejects_date_that_less_than_today(self):
+        validator = DateGTETodayValidator()
+        date = datetime.strptime("08-11-1999", "%d-%m-%Y")
+        res = validator.validate(date)
+        self.assertFalse(res)
+
+    def test_Date1BeforeDate2Validator_validates_two_dates(self):
+        validator = Date1BeforeDate2Validator()
+        date1 = datetime.strptime("08-11-2022", "%d-%m-%Y")
+        date2 = datetime.strptime("11-11-2022", "%d-%m-%Y")
+        res = validator.validate(date1, date2)
+        self.assertTrue(res)
+
+    def test_Date1BeforeDate2Validator_rejects_given_date1_after_date_2(self):
+        validator = Date1BeforeDate2Validator()
+        date1 = datetime.strptime("11-11-2022", "%d-%m-%Y")
+        date2 = datetime.strptime("08-11-2022", "%d-%m-%Y")
+        res = validator.validate(date1, date2)
+        self.assertFalse(res)
+
+    def test_Date1BeforeDate2Validator_rejects_given_same_dates(self):
+        validator = Date1BeforeDate2Validator()
+        date1 = datetime.strptime("11-11-2022", "%d-%m-%Y")
+        res = validator.validate(date1, date1)
+        self.assertFalse(res)
